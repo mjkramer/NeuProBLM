@@ -1,0 +1,24 @@
+/run/verbose 1
+#/event/verbose 1
+#/tracking/verbose 1
+
+/MBNM/seedWithUUID
+
+/MBNM/setTargetLength @TARGETLENGTH@
+/MBNM/setTargetRadius @TARGETRADIUS@
+/MBNM/setTargetMaterial @TARGETMATERIAL@
+
+/MBNM/setReferencePhysList @PHYSICSLIST@
+/physics_engine/tailor/MuonNuclear @NEWMUNUCLEARFLAG@
+
+/MBNM/setFileName @ROOTFILENAME@
+
+/run/initialize
+
+/gps/particle mu+
+/gps/energy @MUENERGY@
+/gps/direction 0 0 1
+/gps/position 0 0 -5 m
+
+/run/beamOn @NEVENTS@
+
