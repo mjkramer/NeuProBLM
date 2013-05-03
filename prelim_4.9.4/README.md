@@ -1,7 +1,7 @@
 About
 =====
 
-This is the original code used Jason Detwiler for his study *Muon Beam Experiment MC (Dec 2011)*.
+This is the original code used Jason Detwiler for his study *Muon Beam Experiment MC* (Dec 2011).
 
 Original usage notes:
 
