@@ -1,7 +1,9 @@
-NeuProBLM
-=========
+About
+=====
 
-Usage notes from Jason:
+This is the original code used Jason Detwiler for his study *Muon Beam Experiment MC (Dec 2011)*.
+
+Original usage notes:
 
 > I'm attaching a tarball. NeuProBLM is my name for the project (Neutron
 > Production by BeamLine Muons, although in the files you will see the
