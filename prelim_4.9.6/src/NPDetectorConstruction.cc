@@ -1,8 +1,5 @@
 
-#include "globals.hh"
 #include "NPDetectorConstruction.hh"
-#include "NPSteppingAction.hh"
-#include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
@@ -11,7 +8,6 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
-#include "G4Run.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -40,16 +36,19 @@ G4VPhysicalVolume* NPDetectorConstruction::Construct()
   G4VisAttributes* glassVisAtt 
     = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.3));
 
+  // world
   G4Box* worldBox = new G4Box("worldBox", 10.0*m, 10.0*m, 10.0*m);
   G4LogicalVolume* worldL = new G4LogicalVolume(worldBox, vacuum, "worldL", 0, 0, 0);
   worldL->SetVisAttributes(G4VisAttributes::Invisible);
 
+  // target
   G4double inch = 2.54*cm;
   G4Box* targetS = new G4Box("targetS", 2.*inch, 2.*inch, 4.*inch);
   G4LogicalVolume* targetL = new G4LogicalVolume(targetS, targetMat, "targetL", 0 ,0, 0);
   targetL->SetVisAttributes(copperVisAtt);
   new G4PVPlacement(G4Transform3D::Identity, targetL, "target", worldL, false, 0);
 
+  // detector
   G4Tubs* detectorS = new G4Tubs("detectorS", 0, 2.5*inch, 2.5*inch, 0, 2.0*pi);
   G4LogicalVolume* detectorL 
     = new G4LogicalVolume(detectorS, detectorMat, "detectorL", 0 ,0, 0);
