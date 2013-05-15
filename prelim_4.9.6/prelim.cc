@@ -33,9 +33,9 @@ int main(int argc, char** argv)
   if ( argc == 1 ) {
     // interactive mode
     G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    UImanager->ApplyCommand("/control/execute vis.mac");
     ui->SessionStart();
     delete ui;
-    (new G4UIterminal(new G4UItcsh))->SessionStart();
   } else {
     // batch mode
     UImanager->ApplyCommand(G4String("/control/execute ")+argv[1]);
