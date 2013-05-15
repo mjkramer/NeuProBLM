@@ -1,5 +1,6 @@
 #include "G4RunManager.hh"
 #include "G4UIterminal.hh"
+#include "G4UIExecutive.hh"
 #include "G4UItcsh.hh"
 #include "G4VisExecutive.hh"
 #include "G4RunManager.hh"
@@ -26,12 +27,18 @@ int main(int argc, char** argv)
   G4VisManager* visManager = new G4VisExecutive;
   visManager->Initialize();
 
+  // Get the pointer to the User Interface manager
+  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
   if ( argc == 1 ) {
     // interactive mode
+    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    ui->SessionStart();
+    delete ui;
     (new G4UIterminal(new G4UItcsh))->SessionStart();
   } else {
     // batch mode
-    G4UImanager::GetUIpointer()->ApplyCommand(G4String("/control/execute ")+argv[1]);
+    UImanager->ApplyCommand(G4String("/control/execute ")+argv[1]);
   }
 
   delete visManager;
