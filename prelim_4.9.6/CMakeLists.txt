@@ -50,6 +50,7 @@ set(NP_SCRIPTS
   muBeam.mac
   muBeamTemplate.mac
   muBeamTemplate.sub
+  muBeamTemplate.condor
   vis.mac
   )
 
