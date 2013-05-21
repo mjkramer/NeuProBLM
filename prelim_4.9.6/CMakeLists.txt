@@ -49,6 +49,7 @@ target_link_libraries(prelim ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 set(NP_SCRIPTS
   muBeam.mac
   muBeamTemplate.mac
+  muBeamTemplate.sub
   vis.mac
   )
 
