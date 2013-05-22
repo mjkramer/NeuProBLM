@@ -4,9 +4,9 @@
 
 /NP/seedWithUUID
 
-/NP/setTargetLength @TARGETLENGTH@
-/NP/setTargetRadius @TARGETRADIUS@
-/NP/setTargetMaterial @TARGETMATERIAL@
+#/NP/setTargetLength @TARGETLENGTH@
+#/NP/setTargetRadius @TARGETRADIUS@
+#/NP/setTargetMaterial @TARGETMATERIAL@
 
 /NP/setReferencePhysList @PHYSICSLIST@
 /physics_engine/tailor/MuonNuclear @NEWMUNUCLEARFLAG@
