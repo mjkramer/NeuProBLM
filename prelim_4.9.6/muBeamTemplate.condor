@@ -1,0 +1,6 @@
+Executable = /home/jloach/working/neuproblm/NeuProBLM/build/prelim
+Arguments  = @JOBNAME@.mac
+Output     = @JOBNAME@.condor.o
+Error      = @JOBNAME@.condor.e
+Getenv     = true
+Queue
