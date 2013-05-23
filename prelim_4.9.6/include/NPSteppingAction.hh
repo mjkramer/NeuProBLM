@@ -5,6 +5,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include <vector>
+#include <iostream>
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
@@ -29,7 +30,6 @@ class NPSteppingAction : public G4UserSteppingAction, public G4UImessenger
     TTree* fTree;
 
     G4int fNEvents;
-    G4double fDetectorE; // sum of all edeps for this event
 
     // target exiters
     std::vector<G4int> fTEPIDs; // target exiter particle IDs
