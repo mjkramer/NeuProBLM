@@ -38,25 +38,27 @@ G4VPhysicalVolume* NPDetectorConstruction::Construct()
 
   // world
   G4Box* worldBox = new G4Box("worldBox", 10.0*m, 10.0*m, 10.0*m);
-  G4LogicalVolume* worldL = new G4LogicalVolume(worldBox, vacuum, "worldL", 0, 0, 0);
+  G4LogicalVolume* worldL = new G4LogicalVolume(worldBox, vacuum, "worldL");
   worldL->SetVisAttributes(G4VisAttributes::Invisible);
+  G4VPhysicalVolume* physWorld =
+    new G4PVPlacement(0, G4ThreeVector(), worldL, "world", 0, false, 0, true);                 
 
   // target
   G4double inch = 2.54*cm;
   G4Box* targetS = new G4Box("targetS", 2.*inch, 2.*inch, 4.*inch);
-  G4LogicalVolume* targetL = new G4LogicalVolume(targetS, targetMat, "targetL", 0 ,0, 0);
+  G4LogicalVolume* targetL = new G4LogicalVolume(targetS, targetMat, "targetL");
   targetL->SetVisAttributes(copperVisAtt);
-  new G4PVPlacement(G4Transform3D::Identity, targetL, "target", worldL, false, 0);
+  new G4PVPlacement(G4Transform3D::Identity, targetL, "target", worldL, false, 0, true);
 
   // detector
   G4Tubs* detectorS = new G4Tubs("detectorS", 0, 2.5*inch, 2.5*inch, 0, 2.0*pi);
   G4LogicalVolume* detectorL 
-    = new G4LogicalVolume(detectorS, detectorMat, "detectorL", 0 ,0, 0);
+    = new G4LogicalVolume(detectorS, detectorMat, "detectorL");
   detectorL->SetVisAttributes(glassVisAtt);
   G4Transform3D detectorPosRot = G4RotateY3D(90.*degree)*G4TranslateZ3D(1.5*m);
-  new G4PVPlacement(detectorPosRot, detectorL, "detector", worldL, false, 0);
+  new G4PVPlacement(detectorPosRot, detectorL, "detector", worldL, false, 0, true);
 
-  return new G4PVPlacement(G4Transform3D::Identity, worldL, "world", 0, false, 0);
+  return physWorld;
 
 }
 
