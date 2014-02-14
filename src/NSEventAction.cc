@@ -47,6 +47,8 @@ void NSEventAction::BeginOfEventAction(const G4Event*)
   fEdep = 0;
   fEini = 0;
   fElast = false;
+
+  std::cout << "\n***********************************\nNew event\n";
 }
     
 void NSEventAction::EndOfEventAction(const G4Event*)

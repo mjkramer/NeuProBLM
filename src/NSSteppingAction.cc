@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 
 #include "G4VPhysicalVolume.hh"
 #include "G4UIterminal.hh"
@@ -21,12 +21,25 @@ void NSSteppingAction::UserSteppingAction(const G4Step *step)
 {
   fEventAction->Register(step);
 
-  G4VPhysicalVolume *preStepVol = step->GetPreStepPoint()->GetPhysicalVolume();
-  G4VPhysicalVolume *postStepVol = step->GetPostStepPoint()->GetPhysicalVolume();
+  G4StepPoint* preStepPt = step->GetPreStepPoint();
+  G4StepPoint* postStepPt = step->GetPostStepPoint();
+
+  double e1 = preStepPt->GetKineticEnergy()/MeV;
+  double e2 = postStepPt->GetKineticEnergy()/MeV;
+  double dx = (preStepPt->GetPosition() - postStepPt->GetPosition()).mag()/cm;
+
+  G4VPhysicalVolume *preStepVol = preStepPt->GetPhysicalVolume();
+  G4VPhysicalVolume *postStepVol = postStepPt->GetPhysicalVolume();
 
   G4String preName = preStepVol ? preStepVol->GetName() : G4String("NULL");
   G4String postName = postStepVol ? postStepVol->GetName() : G4String("NULL");
 
+  G4String partName = step->GetTrack()->GetParticleDefinition()->GetParticleName();
+
+  printf("Step (%s): %s (%f MeV) -> %s (%f MeV), dx = %f cm\n",
+	 partName.data(), preName.data(), e1, postName.data(), e2, dx);
+
   // std::cout << "Step: " << preName << " -> " << postName << " " <<
-  //   step->GetTrack()->GetKineticEnergy()/MeV << " MeV" << std::endl;
+  //   step->GetTrack()->GetKineticEnergy()/MeV << " MeV" <<
+  //   " (" << partName << ")" << std::endl;
 }

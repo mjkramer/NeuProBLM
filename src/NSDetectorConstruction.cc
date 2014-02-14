@@ -13,11 +13,18 @@ using namespace CLHEP;
 
 G4VPhysicalVolume* NSDetectorConstruction::Construct()
 {
-  G4Material* vacuum
-    = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic", false);
+  G4NistManager* man = G4NistManager::Instance();
 
-  G4Material* detectorMat 
-    = G4NistManager::Instance()->FindOrBuildMaterial("G4_POLYETHYLENE", false);
+  G4Material* vacuum = man->FindOrBuildMaterial("G4_Galactic", false);
+
+  G4Element* hydrogen = man->FindOrBuildElement("H");
+  G4Element* carbon = man->FindOrBuildElement("C");
+
+  // G4Material* detectorMat = man->FindOrBuildMaterial("G4_POLYETHYLENE", false);
+
+  G4Material* detectorMat = new G4Material("EJ-301", 0.87*g/cm3, 2);
+  detectorMat->AddElement(carbon, 8);
+  detectorMat->AddElement(hydrogen, 10);
 
   G4VisAttributes* glassVisAtt 
     = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.3));
