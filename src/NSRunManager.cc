@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "G4PhysListFactory.hh"
 
 #include "NSRunManager.hh"
@@ -5,8 +7,6 @@
 #include "NSSteppingAction.hh"
 #include "NSEventAction.hh"
 #include "NSPrimaryGeneratorAction.hh"
-
-// #include <ctime>		// cstdlib?
 
 NSRunManager::NSRunManager() {
   SetUserInitialization(new NSDetectorConstruction);
@@ -18,10 +18,25 @@ NSRunManager::NSRunManager() {
   SetUserAction(eventAction);
   SetUserAction(new NSSteppingAction(eventAction));
 
-  CLHEP::HepRandom::setTheSeed(time(0));
+  fDirectory = new G4UIdirectory("/NS/");
+  fDirectory->SetGuidance("Parameters for nuScint");
+
+  fSeedWithTimeCmd = new G4UIcmdWithoutParameter("/NS/seedWithTime", this);
+  fSeedWithTimeCmd->SetGuidance("Seed RNG with UNIX time");
 }
 
 NSRunManager::~NSRunManager() {
 }
 
-
+void NSRunManager::SetNewValue(G4UIcommand *cmd, G4String args)
+{
+  if (cmd == fSeedWithTimeCmd) {
+    int seed = time(0);
+    G4Random::setTheSeed(seed);
+    std::cout << "Seed: " << seed << std::endl;
+  } else if (cmd == fSeedCmd) {
+    G4int seed = fSeedCmd->GetNewIntValue(args);
+    G4Random::setTheSeed(seed);
+    std::cout << "Seed: " << seed << std::endl;
+  }
+}

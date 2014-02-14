@@ -17,6 +17,31 @@
 
 using namespace CLHEP;
 
+
+NSEventAction::NSEventAction() :
+  fFile(NULL), fTree(NULL)
+{
+  fFileNameCmd = new G4UIcmdWithAString("/NS/setFileName", this);
+  fFileNameCmd->SetGuidance("Set file name");
+}
+
+NSEventAction::~NSEventAction()
+{
+  if (fFile) {
+    fTree->Write();
+    fFile->Close();
+  }
+}
+
+void NSEventAction::SetNewValue(G4UIcommand *cmd, G4String args)
+{
+  if (cmd == fFileNameCmd) {
+    fFile = new TFile(args, "RECREATE");
+    fTree = new TTree("tree", "tree");
+    fTree->Branch("Edep", &fEdep);
+  }
+}
+
 void NSEventAction::BeginOfEventAction(const G4Event*)
 {
   fEdep = 0;
@@ -26,7 +51,11 @@ void NSEventAction::BeginOfEventAction(const G4Event*)
     
 void NSEventAction::EndOfEventAction(const G4Event*)
 {
-  std::cout << "Total deposited: " << fEdep << " MeV" << std::endl << std::endl;
+  // std::cout << "Total deposited: " << fEdep << " MeV" << std::endl << std::endl;
+
+  if (fTree) {
+    fTree->Fill();
+  }
 }
 
 void NSEventAction::Register(const G4Step* step)

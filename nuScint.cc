@@ -7,6 +7,7 @@
 #include "G4UIExecutive.hh"
 #include "G4UItcsh.hh"
 #include "G4VisExecutive.hh"
+#include "globals.hh"
 
 #include "NSRunManager.hh"
 

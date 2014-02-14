@@ -13,7 +13,6 @@
 #include "G4UImessenger.hh"
 #include "G4Run.hh"
 
-
 #include "NSSteppingAction.hh"
 
 using namespace CLHEP;
@@ -28,6 +27,6 @@ void NSSteppingAction::UserSteppingAction(const G4Step *step)
   G4String preName = preStepVol ? preStepVol->GetName() : G4String("NULL");
   G4String postName = postStepVol ? postStepVol->GetName() : G4String("NULL");
 
-  std::cout << "Step: " << preName << " -> " << postName << " " <<
-    step->GetTrack()->GetKineticEnergy()/MeV << " MeV" << std::endl;
+  // std::cout << "Step: " << preName << " -> " << postName << " " <<
+  //   step->GetTrack()->GetKineticEnergy()/MeV << " MeV" << std::endl;
 }

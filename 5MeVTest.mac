@@ -2,6 +2,9 @@
 #/event/verbose 1
 #/tracking/verbose 1
 
+/NS/seedWithTime
+/NS/setFileName out.root
+
 /physics_engine/tailor/MuonNuclear on
 
 /run/initialize
@@ -11,4 +14,4 @@
 /gps/direction 0 0 1
 /gps/position 0 0 -5 m
 
-/run/beamOn 10
+/run/beamOn 1000
