@@ -1,4 +1,5 @@
-#include <iostream>
+#include <algorithm>
+#include <cstdio>
 
 #include "NSEventAction.hh"
 
@@ -8,7 +9,7 @@
 #include "G4UImanager.hh"
 #include "G4RunManager.hh"
 #include "G4UIdirectory.hh"
-#include "G4UIcmdWithADoubleAndUnit.hh"
+#include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UserSteppingAction.hh"
@@ -19,10 +20,13 @@ using namespace CLHEP;
 
 
 NSEventAction::NSEventAction() :
-  fFile(NULL), fTree(NULL)
+  fKB(0), fFile(NULL), fTree(NULL)
 {
   fFileNameCmd = new G4UIcmdWithAString("/NS/setFileName", this);
   fFileNameCmd->SetGuidance("Set file name");
+
+  fKBCmd = new G4UIcmdWithADouble("/NS/setKB", this);
+  fKBCmd->SetGuidance("Set Birks constant");
 }
 
 NSEventAction::~NSEventAction()
@@ -38,43 +42,52 @@ void NSEventAction::SetNewValue(G4UIcommand *cmd, G4String args)
   if (cmd == fFileNameCmd) {
     fFile = new TFile(args, "RECREATE");
     fTree = new TTree("tree", "tree");
-    fTree->Branch("Edep", &fEdep);
+    fTree->Branch("Nprotons", &fNprotons, "Nprotons/I");
+    fTree->Branch("proEdep", fProtonEdep, "proEdep[Nprotons]/F");
+    fTree->Branch("proEtrue", fProtonEtrue, "proEtrue[Nprotons]/F");
+  } else if (cmd == fKBCmd) {
+    fKB = fKBCmd->GetNewDoubleValue(args)/(cm/MeV);
   }
 }
 
 void NSEventAction::BeginOfEventAction(const G4Event*)
 {
-  fEdep = 0;
-  fEini = 0;
-  fElast = false;
+  fProtons.clear();
 
-  std::cout << "\n***********************************\nNew event\n";
+  // printf("\n***********************************\nNew event\n");
 }
     
 void NSEventAction::EndOfEventAction(const G4Event*)
 {
-  // std::cout << "Total deposited: " << fEdep << " MeV" << std::endl << std::endl;
-
   if (fTree) {
+    fNprotons = fProtons.size();
+
+    std::fill(fProtonEdep, fProtonEdep+fNprotons, 0);
+    std::fill(fProtonEtrue, fProtonEtrue+fNprotons, 0);
+
+    int i=0;
+    for (std::map<G4Track*, Proton>::iterator it = fProtons.begin();
+	 it != fProtons.end(); ++it, ++i) {
+      Proton& p = it->second;
+      fProtonEdep[i] = p.Edep;
+      fProtonEtrue[i] = p.Etrue;
+      // printf("Proton: Edep = %f, Etrue = %f\n", p.Edep, p.Etrue);
+    }
+
     fTree->Fill();
   }
 }
 
-void NSEventAction::Register(const G4Step* step)
+void NSEventAction::Register(G4Track* track, double e1, double e2, double dx)
 {
-  G4VPhysicalVolume *preStepVol = step->GetPreStepPoint()->GetPhysicalVolume();
-  G4VPhysicalVolume *postStepVol = step->GetPostStepPoint()->GetPhysicalVolume();
+  Proton& p = fProtons[track];
 
-  double Ekin = step->GetTrack()->GetKineticEnergy()/MeV;
-
-  if (preStepVol != NULL && postStepVol != NULL) {
-    if (fEini == 0) fEini = fElast = Ekin;
-    else {
-      if (postStepVol->GetName() == "world" && fEdep == 0) {
-	fEdep = fEini - fElast;
-      } else {
-	fElast = Ekin;
-      }
-    }
+  if (p.Etrue == 0) {		// new proton
+    p.Etrue = e1;
+    // printf("Setting Etrue = %f\n", e1);
   }
+
+  double Edep = (e1-e2) / (1 + fKB * (e1-e2)/dx);
+  // printf("Adding Edep = %f\n", Edep);
+  p.Edep += Edep;
 }

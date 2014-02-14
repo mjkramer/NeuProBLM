@@ -4,6 +4,7 @@
 
 /NS/seedWithTime
 /NS/setFileName out.root
+/NS/setKB 0.125 # mm/MeV
 
 /physics_engine/tailor/MuonNuclear on
 
