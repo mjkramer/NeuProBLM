@@ -1,5 +1,4 @@
-
-/NP/setReferencePhysList QGSP_BERT
+/NP/setReferencePhysList QGSP_BERT_HP # QGSC?
 /run/initialize
 
 /vis/open OGL 600x600-0+0

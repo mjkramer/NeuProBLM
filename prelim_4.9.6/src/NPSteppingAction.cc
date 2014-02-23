@@ -4,6 +4,7 @@
 #include <fstream>
 
 using namespace std;
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
