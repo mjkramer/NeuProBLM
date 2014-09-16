@@ -54,7 +54,7 @@ void NSEventAction::SetNewValue(G4UIcommand *cmd, G4String args)
     fStepTree->Branch("dx", &fdx, "dx/F");
   }
   else if (cmd == fKBCmd) {
-    fKB = fKBCmd->GetNewDoubleValue(args)/(cm/MeV);
+    fKB = fKBCmd->GetNewDoubleValue(args)/(mm/MeV);
   }
 }
 
