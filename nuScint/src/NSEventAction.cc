@@ -20,7 +20,7 @@ using namespace CLHEP;
 
 
 NSEventAction::NSEventAction() :
-  fKB(0), fFile(NULL), fTree(NULL)
+  fKB(0), fFile(NULL), fProTree(NULL), fStepTree(NULL), fEventId(0)
 {
   fFileNameCmd = new G4UIcmdWithAString("/NS/setFileName", this);
   fFileNameCmd->SetGuidance("Set file name");
@@ -32,7 +32,7 @@ NSEventAction::NSEventAction() :
 NSEventAction::~NSEventAction()
 {
   if (fFile) {
-    fTree->Write();
+    fProTree->Write();
     fFile->Close();
   }
 }
@@ -41,11 +41,19 @@ void NSEventAction::SetNewValue(G4UIcommand *cmd, G4String args)
 {
   if (cmd == fFileNameCmd) {
     fFile = new TFile(args, "RECREATE");
-    fTree = new TTree("tree", "tree");
-    fTree->Branch("Nprotons", &fNprotons, "Nprotons/I");
-    fTree->Branch("proEdep", fProtonEdep, "proEdep[Nprotons]/F");
-    fTree->Branch("proEtrue", fProtonEtrue, "proEtrue[Nprotons]/F");
-  } else if (cmd == fKBCmd) {
+
+    fProTree = new TTree("proTree", "Proton Tree");
+    fProTree->Branch("Nprotons", &fNprotons, "Nprotons/I");
+    fProTree->Branch("proEdep", fProtonEdep, "proEdep[Nprotons]/F");
+    fProTree->Branch("proEtrue", fProtonEtrue, "proEtrue[Nprotons]/F");
+
+    fStepTree = new TTree("stepTree", "Step Tree");
+    fStepTree->Branch("eventId", &fEventId, "eventId/I");
+    fStepTree->Branch("Ei", &fEi, "Ei/F");
+    fStepTree->Branch("Ef", &fEf, "Ef/F");
+    fStepTree->Branch("dx", &fdx, "dx/F");
+  }
+  else if (cmd == fKBCmd) {
     fKB = fKBCmd->GetNewDoubleValue(args)/(cm/MeV);
   }
 }
@@ -59,7 +67,7 @@ void NSEventAction::BeginOfEventAction(const G4Event*)
     
 void NSEventAction::EndOfEventAction(const G4Event*)
 {
-  if (fTree) {
+  if (fProTree) {
     fNprotons = fProtons.size();
 
     std::fill(fProtonEdep, fProtonEdep+fNprotons, 0);
@@ -74,8 +82,10 @@ void NSEventAction::EndOfEventAction(const G4Event*)
       // printf("Proton: Edep = %f, Etrue = %f\n", p.Edep, p.Etrue);
     }
 
-    fTree->Fill();
+    fProTree->Fill();
   }
+
+  ++fEventId;
 }
 
 void NSEventAction::Register(G4Track* track, double e1, double e2, double dx)
@@ -90,4 +100,9 @@ void NSEventAction::Register(G4Track* track, double e1, double e2, double dx)
   double Edep = (e1-e2) / (1 + fKB * (e1-e2)/dx);
   // printf("Adding Edep = %f\n", Edep);
   p.Edep += Edep;
+
+  fEi = e1;
+  fEf = e2;
+  fdx = dx;
+  fStepTree->Fill();
 }

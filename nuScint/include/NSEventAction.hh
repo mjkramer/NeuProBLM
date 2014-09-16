@@ -48,9 +48,13 @@ private:
   G4UIcmdWithADouble *fKBCmd;
   TFile *fFile;
 
-  TTree *fTree;
+  TTree *fProTree;
   G4int fNprotons;
   G4float fProtonEdep[128], fProtonEtrue[128];
+
+  TTree *fStepTree;
+  G4int fEventId;
+  G4float fEi, fEf, fdx;
 };
 
 #endif
